@@ -8,15 +8,13 @@ import (
 )
 
 func main() {
-	orgs, err := api.Champs()
+	count, err := api.ParticipantsCount("champ_ua_06_25")
 	if err != nil {
 		fmt.Printf("ERROR: %v\n", err)
 		return
 	}
 
-	for _, i := range *orgs {
-		fmt.Printf("Name: %v. ID: %v\n", i.Tittle, i.ID)
-	}
+	fmt.Printf("Participants count: %v\n", count)
 }
 
 

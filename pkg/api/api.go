@@ -12,19 +12,20 @@ type Organization struct {
 
 
 type Champ struct {
-	ID 	string `json:"champId"` // Solve incoorect id type
+	ID utils.KumiteInt `json:"champId"` 
 	
 	RegFrom 	string `json:"champRegFrom"`
 	RegTo 		string `json:"champRegTo"`
 	From 			string `json:"champFrom"`
 	To 				string `json:"champTo"`
 	
-	Type 			string `json:"champType"`
 	Tittle 		string `json:"title"`
 	Email 		string `json:"emailorg"`
 	EmailTech string `json:"emailtech"`
-	OrgID 		string `json:"orgId"`	 
-	ClubID 		string `json:"champClubId"`
+	
+	Type 			utils.KumiteInt `json:"champType"`
+  OrgID 		utils.KumiteInt `json:"orgId"`	 
+	ClubID 		utils.KumiteInt `json:"champClubId"`
 }
 
 
@@ -48,6 +49,40 @@ type Coach struct {
 	Count int    `json:"count"`
 }
 
+type Participant struct {
+  FIO	 string `json:"FIO"`
+	FIO1 string `json:"FIO1"`
+	FIO2 string `json:"FIO2"`
+	FIO3 string `json:"FIO3"`
+  FIO4 string `json:"FIO4"`
+
+  Dan   string `json:"DAN"`
+  Birth string `json:"DateBR"`
+  
+
+	Age	int `json:"Age"`
+  Photo	string `json:"Photo"`
+  
+  Weight    utils.KumiteFloat	`json:"Weight"`
+	Kumite    utils.KumiteInt   `json:"Kumite"`
+  Kata      utils.KumiteInt   `json:"Kata"`
+  KataGroup	utils.KumiteInt   `json:"KataGroup"`
+  Country	  utils.KumiteInt   `json:"CountryId"` 
+  Region	  utils.KumiteInt   `json:"RegionId"`
+  Club	    utils.KumiteInt   `json:"ClubId"`
+  Coach	    utils.KumiteInt   `json:"CoachId"`
+  
+	Subtournament	utils.KumiteInt `json:"subtournamentId"`
+  Category	    utils.KumiteInt `json:"categoryId"`
+
+  SoundUA     string `json:"SoundUA"` 	
+  ClubName	  string `json:"ClubName"`
+	ClubCity 	  string `json:"ClubCity"`
+  CoachName	  string `json:"CoachName"`
+  CountryFlag	string `json:"CountryFlag"`
+  ClubLogo    string `json:"ClubLogo"`
+}
+
 
 func Organizations() (*[]Organization, error) {
 	return utils.FetchAPI[[]Organization]("https://alliance-kumite.net/api-get-organization")
@@ -64,7 +99,7 @@ func Champs() (*[]Champ, error) {
 }
 
 func ChampClubs(champTittle string) (*[]Club, error) {
-	data := map[string]string{
+	data := map[string]any {
 		"title": champTittle,
 	} 
 
@@ -78,7 +113,7 @@ func ChampClubs(champTittle string) (*[]Club, error) {
 
 
 func ChampCoaches(champTittle string) (*[]Coach, error) {
-	data := map[string]string{
+	data := map[string]any {
 		"title": champTittle,
 	} 
 
@@ -90,5 +125,45 @@ func ChampCoaches(champTittle string) (*[]Coach, error) {
 
 	return utils.ToStruct(coahes), nil
 } 
+
+func ParticipantsCount(champTittle string) (int, error) {
+	data := map[string]any {
+		"title": champTittle,
+		"category": nil, 
+		"coach": nil,
+		"club": nil,
+		"coachname": nil,
+		"clubname": nil,
+		"country": nil,
+	}
+
+		
+	count, err := utils.PostAPI[struct {Count int `json:"count"`}]("https://alliance-kumite.net/api-champ-get-participants-count", data)
+	if err != nil {
+		return 0, err
+	}
+
+	return count.Count, nil
+}
+
+func Participants(champTittle string) (*[]Participant, error) {
+	data := map[string]any {
+    "title": champTittle,
+    "category": nil,
+    "coach": nil,
+    "club": nil,
+    "coachname": nil,
+    "clubname": nil,
+    "country": nil,
+	}
+
+	fighters, err := utils.PostAPI[struct {Participants map[string]Participant}]("https://alliance-kumite.net/api-champ-get-participants", data)
+	if err != nil {
+		return nil, err
+	}
+
+  return utils.ToStruct(&fighters.Participants), nil
+}
+
 
 

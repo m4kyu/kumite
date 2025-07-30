@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-  "bytes"
+	"bytes"
 )
 
 
@@ -20,7 +20,7 @@ func FetchAPI[T any](url string) (*T, error) {
 }
 
 
-func PostAPI[T any](url string, data map[string]string) (*T, error) {
+func PostAPI[T any](url string, data map[string]any) (*T, error) {
 	jsonData, err := json.Marshal(data) 
 	if err != nil {
 		return nil, err
@@ -30,7 +30,6 @@ func PostAPI[T any](url string, data map[string]string) (*T, error) {
 	if err != nil {
 		return nil, err;
 	}	
-
 	return marshalData[T](resp)
 }
 
@@ -65,4 +64,12 @@ func marshalData[T any](resp *http.Response) (*T, error) {
 	return &res, nil
 }
 
+func IntToStringPtr(i *int) *string {
+	if i == nil {
+		return nil
+	}
+
+	str := strconv.Itoa(*i)
+	return &str
+}
 
