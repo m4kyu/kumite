@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/m4kyu/kumite/internal/utils"
+	"github.com/m4kyu/kumite/internal/types"
 )
 
 type Organization struct {
@@ -12,7 +13,7 @@ type Organization struct {
 
 
 type Champ struct {
-	ID utils.KumiteInt `json:"champId"` 
+	ID types.KumiteInt `json:"champId"` 
 	
 	RegFrom 	string `json:"champRegFrom"`
 	RegTo 		string `json:"champRegTo"`
@@ -23,9 +24,9 @@ type Champ struct {
 	Email 		string `json:"emailorg"`
 	EmailTech string `json:"emailtech"`
 	
-	Type 			utils.KumiteInt `json:"champType"`
-  OrgID 		utils.KumiteInt `json:"orgId"`	 
-	ClubID 		utils.KumiteInt `json:"champClubId"`
+	Type 			types.KumiteInt `json:"champType"`
+  OrgID 		types.KumiteInt `json:"orgId"`	 
+	ClubID 		types.KumiteInt `json:"champClubId"`
 }
 
 
@@ -63,17 +64,17 @@ type Participant struct {
 	Age	int `json:"Age"`
   Photo	string `json:"Photo"`
   
-  Weight    utils.KumiteFloat	`json:"Weight"`
-	Kumite    utils.KumiteInt   `json:"Kumite"`
-  Kata      utils.KumiteInt   `json:"Kata"`
-  KataGroup	utils.KumiteInt   `json:"KataGroup"`
-  Country	  utils.KumiteInt   `json:"CountryId"` 
-  Region	  utils.KumiteInt   `json:"RegionId"`
-  Club	    utils.KumiteInt   `json:"ClubId"`
-  Coach	    utils.KumiteInt   `json:"CoachId"`
+  Weight    types.KumiteFloat	`json:"Weight"`
+	Kumite    types.KumiteInt   `json:"Kumite"`
+  Kata      types.KumiteInt   `json:"Kata"`
+  KataGroup	types.KumiteInt   `json:"KataGroup"`
+  Country	  types.KumiteInt   `json:"CountryId"` 
+  Region	  types.KumiteInt   `json:"RegionId"`
+  Club	    types.KumiteInt   `json:"ClubId"`
+  Coach	    types.KumiteInt   `json:"CoachId"`
   
-	Subtournament	utils.KumiteInt `json:"subtournamentId"`
-  Category	    utils.KumiteInt `json:"categoryId"`
+	Subtournament	types.KumiteInt   `json:"subtournamentId"`
+  Categories    types.KumiteSlice `json:"categoryId"`
 
   SoundUA     string `json:"SoundUA"` 	
   ClubName	  string `json:"ClubName"`

@@ -1,4 +1,4 @@
-package utils
+package types 
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 
 type KumiteInt int
 type KumiteFloat float32
+type KumiteSlice []KumiteInt
 
 type KumiteType interface {
 	UnmarshalJSON(data []byte) error
@@ -18,6 +19,11 @@ type KumiteType interface {
 func (kint *KumiteInt) UnmarshalJSON(data []byte) error {
 	return processType(data, kint)
 }
+
+func (kint *KumiteSlice) UnmarshalJSON(data []byte) error {
+	return processType(data, kint)
+}
+
 
 func (kfloat *KumiteFloat) UnmarshalJSON(data []byte) error {
 	return processType(data, kfloat)
@@ -46,6 +52,22 @@ func (kfloat *KumiteFloat) Convert(data string) error {
   *kfloat = KumiteFloat(num)
   return nil
 }
+
+func (kslice *KumiteSlice) Convert(data string) error {
+	nums := strings.SplitSeq(data, ",") 	
+	
+	for val := range nums {
+		num, err := strconv.Atoi(val)
+		if err != nil {
+	  	return err
+		}
+
+		*kslice = append(*kslice, KumiteInt(num))
+	}
+
+  return nil
+}
+
 
 
 func processType(data []byte, val KumiteType) error {
