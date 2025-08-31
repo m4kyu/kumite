@@ -30,11 +30,27 @@ type Champ struct {
 }
 
 
-type ChampInfo struct {
-	Categories map[string]string `json:"Categories"`
-	Subchamps  map[string]string `json:"subchamps"`
-	Info  		 string            `json:"champInfo"`
-	Address 	 string            `json:"address"`
+type ChampInfoEx struct {
+	Champ
+
+	NameEN 	  string `json:"champNameEn"`	
+  NameUA 		string `json:"champNameUa"`	
+  CityEN 		string `json:"champCityEn"`	
+  CityUA 		string `json:"champCityUa"`
+  AddressEN string `json:"addressEn"`
+  AddressUA string `json:"addressUa"`
+
+  InfoEN string `json:"champInfoEn"`
+  InfoUA string `json:"champInfoUa"`
+  TatamiType types.KumiteInt `json:"typeTatami"`
+  ActualTime types.KumiteInt `json:"actualTime"` 
+	TypeCheckCircle types.KumiteInt `json:"typeCheckCircle"`
+
+	TeamCompetition types.KumiteInt `json:"teamcompetition"`
+  RatingChamp      types.KumiteSlice[types.KumiteString] `json:"rating_champ"`
+   
+  ChampAge types.KumiteInt `json:"champAge"`
+  UseDevision types.KumiteInt `json:"UseDivision"`
 }
 
 type Club struct {
@@ -64,7 +80,7 @@ type Participant struct {
 	Age	int `json:"Age"`
   Photo	string `json:"Photo"`
   
-  Weight    types.KumiteFloat	`json:"Weight"`
+	Weight    types.KumiteFloat	`json:"Weight"`
 	Kumite    types.KumiteInt   `json:"Kumite"`
   Kata      types.KumiteInt   `json:"Kata"`
   KataGroup	types.KumiteInt   `json:"KataGroup"`
@@ -74,7 +90,7 @@ type Participant struct {
   Coach	    types.KumiteInt   `json:"CoachId"`
   
 	Subtournament	types.KumiteInt   `json:"subtournamentId"`
-  Categories    types.KumiteSlice `json:"categoryId"`
+  Categories    types.KumiteSlice[types.KumiteInt] `json:"categoryId"`
 
   SoundUA     string `json:"SoundUA"` 	
   ClubName	  string `json:"ClubName"`
@@ -82,6 +98,12 @@ type Participant struct {
   CoachName	  string `json:"CoachName"`
   CountryFlag	string `json:"CountryFlag"`
   ClubLogo    string `json:"ClubLogo"`
+}
+
+
+type Broadcast struct {
+	TatamiID types.KumiteInt `json:"id"`	
+	URL      string          `json:"url"`
 }
 
 
@@ -98,6 +120,21 @@ func Champs() (*[]Champ, error) {
 
 	return utils.ToStruct(champs), nil
 }
+
+func ChampExt(chamoTittle string) (*ChampInfoEx, error) {
+	data := map[string]any {
+		"title": chamoTittle,
+	}
+
+	raw, err := utils.PostAPI[map[string]ChampInfoEx]("https://alliance-kumite.net/coach/api-get-champ-info", data)
+  if err != nil {
+		return nil, err
+	}
+
+  champ := (*raw)["1"]
+	return &champ, nil 
+}
+
 
 func ChampClubs(champTittle string) (*[]Club, error) {
 	data := map[string]any {
@@ -165,6 +202,19 @@ func Participants(champTittle string) (*[]Participant, error) {
 
   return utils.ToStruct(&fighters.Participants), nil
 }
+
+func Broadcasts(champTittle string) (*[]Broadcast, error) {
+	data := map[string]any {
+		"title": champTittle,
+	} 
+
+	broadcasts, err := utils.PostAPI[map[string]Broadcast]("https://alliance-kumite.net/api-champ-get-tatami-urlvideo", data)
+	if err != nil {
+		return nil, err
+	}
+
+	return utils.ToStruct(broadcasts), nil
+} 
 
 
 
