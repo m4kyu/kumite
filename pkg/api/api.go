@@ -66,6 +66,22 @@ type Coach struct {
 	Count int    `json:"count"`
 }
 
+type Refery struct {
+	ID       types.KumiteInt `json:"ReferyId"`
+	TatamiID types.KumiteInt `json:"TatamiId"`
+  SquadID  types.KumiteInt `json:"BrigadeId"`
+	Sushin	 types.KumiteInt `json:"sushin"`
+	ClubID   types.KumiteInt `json:"ClubId"`
+	ClubName string          `json:"ClubName"`
+	Country  types.KumiteInt `json:"countryId"`
+  CountryFlag string       `json:"countryFlag"`
+
+	FIO    string `json:"FIO"`
+	Birth  string `json:"DateBR"`
+	DAN    string `json:"DAN"`
+	Gender string `json:"Gender"`
+}
+
 type Participant struct {
   FIO	 string `json:"FIO"`
 	FIO1 string `json:"FIO1"`
@@ -160,9 +176,21 @@ func ChampCoaches(champTittle string) (*[]Coach, error) {
 		return nil, err
 	}
 
-
 	return utils.ToStruct(coahes), nil
 } 
+
+func ChampReferies(champTittle string) (*[]Refery, error) {
+	data := map[string]any {
+		"title": champTittle,
+	}
+
+  referies, err := utils.PostAPI[struct {Referys map[string]Refery}]("https://alliance-kumite.net/api-champ-get-referys", data)	
+	if err != nil {
+		return nil, err
+	}
+
+	return utils.ToStruct(&referies.Referys), nil
+}
 
 func ParticipantsCount(champTittle string) (int, error) {
 	data := map[string]any {
