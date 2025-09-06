@@ -3,19 +3,24 @@ package main
 import (
 	"fmt"
 	"github.com/m4kyu/kumite/pkg/api"
+	"github.com/m4kyu/kumite/internal/db"
 )
 
 func main() {
-	data, err := api.ChampReferies("champ_ua_06_25")
+	err := db.DB("./data/test.db")
 	if err != nil {
-		fmt.Printf("ERROR: %v\n", err)
+		fmt.Println(err)
 		return
 	}
 
 
-	for _, val := range *data {
-		fmt.Printf("ID: %v. URL: %v\n", val.TatamiID, val.FIO)
+	champs, err := api.Champs()
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
+
+	db.AddChamps("./data/test.db", champs)
 }
 
 
